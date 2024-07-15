@@ -1,12 +1,13 @@
 # How to run the code?
 1. CLone the repository
-2. Run `pipenv shell`
-3. Run `cd tagsbackend`
-4. Run `python manage.py makemigrations tags`
-5. Run `python manage.py migrate`
-6. Run `python manage.py runserver`
-7. Add new posts, add new tags
-8. Search for posts with tags
+2. Run `pipenv install`
+3. Run `pipenv shell`
+4. Run `cd tagsbackend`
+5. Run `python manage.py makemigrations tags`
+6. Run `python manage.py migrate`
+7. Run `python manage.py runserver`
+8. Add new posts, add new tags
+9. Search for posts with tags
 
 
 ## Notes:
