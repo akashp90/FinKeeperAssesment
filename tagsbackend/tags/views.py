@@ -35,6 +35,7 @@ def home_feed(request):
     posts = Post.objects
     tags = request.GET.get('tags')
     filter_type = request.GET.get('filter_type')
+    exclude_tags = request.GET.get('exclude_tags')
 
     if tags:
         tag_names = [tag.strip() for tag in tags.split(',')]
@@ -50,6 +51,10 @@ def home_feed(request):
             posts = Post.objects.filter(id__in=post_ids)
         elif filter_type == 'any':
             posts = posts.filter(tags__in=tag_objects).distinct()
+        elif filter_type == 'specific':
+        	exclude_tag_names = [tag.strip() for tag in exclude_tags.split(',')]
+        	exclude_tag_objects = Tag.objects.filter(name__in=exclude_tag_names)
+        	posts = posts.filter(tags__in=tag_objects).exclude(tags__in=exclude_tag_objects).distinct()
     else:	
     	posts = posts.all()
 

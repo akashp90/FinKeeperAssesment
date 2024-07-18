@@ -52,10 +52,14 @@
                     <div class="col">
                         <input type="text" name="tags" class="form-control" placeholder="Enter tags separated by commas" value="{{ request.GET.tags }}">
                     </div>
+                    <div class="col" id="exclude-tags-group" data-toggle="tooltip" title="Includes ANY tags in the first search bar, excludes posts with the tags in the second search bar">
+                        <input type="text" name="exclude_tags" class="form-control" placeholder="Enter tags to exclude (comma-separated)" value="{{ request.GET.exclude_tags }}">
+                    </div>
                     <div class="col">
-                        <select name="filter_type" class="form-control">
+                        <select name="filter_type" class="form-control" id="filter_type">
                             <option value="all" {% if request.GET.filter_type == "all" %}selected{% endif %}>All tags</option>
                             <option value="any" {% if request.GET.filter_type == "any" %}selected{% endif %}>Any tags</option>
+                            <option value="specific" {% if request.GET.filter_type == "specific" %}selected{% endif %}>Specific tags</option>
                             
                         </select>
                     </div>
@@ -90,5 +94,25 @@
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var filterTypeSelect = document.getElementById('filter_type');
+        var excludeTagsGroup = document.getElementById('exclude-tags-group');
+
+        function toggleExcludeTags() {
+            console.log("Toggling")
+            if (filterTypeSelect.value === 'specific') {
+                excludeTagsGroup.style.display = 'block';
+            } else {
+                excludeTagsGroup.style.display = 'none';
+            }
+        }
+
+        filterTypeSelect.addEventListener('change', toggleExcludeTags);
+
+        // Initial check on page load
+        toggleExcludeTags();
+    });
+</script>
 </body>
 </html>
