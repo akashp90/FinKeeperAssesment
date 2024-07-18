@@ -31,6 +31,9 @@ def add_post(request):
         form = PostForm()
     return render(request, 'add_post.html', {'form': form})
 
+def intersection(lst1, lst2):
+    return list(set(lst1) & set(lst2))
+
 def home_feed(request):
     posts = Post.objects
     tags = request.GET.get('tags')
@@ -42,19 +45,25 @@ def home_feed(request):
         tag_objects = Tag.objects.filter(name__in=tag_names)
         safe_tag_names = ",".join(tag_objects.order_by("name").values_list("name", flat=True))
 
+        exclude_tag_names = [tag.strip() for tag in exclude_tags.split(',')]
+        exclude_tag_objects = Tag.objects.filter(name__in=exclude_tag_names)
+        safe_exclude_tag_names = ",".join(exclude_tag_objects.order_by("name").values_list("name", flat=True))
+
         if filter_type == 'all':
             all_posts = posts.all()
             post_ids = []
             for post in all_posts:
-            	if post.tag_names == safe_tag_names:
+            	tag_names_list = post.tags.order_by("name").values_list('name', flat=True)
+            	if post.tag_names == safe_tag_names and not intersection(tag_names_list, exclude_tag_names):
+            		# Include only those posts which have all the tags specified, and 
+            		# none of the tags in the exclude list
             		post_ids.append(post.id)
             posts = Post.objects.filter(id__in=post_ids)
         elif filter_type == 'any':
-            posts = posts.filter(tags__in=tag_objects).distinct()
-        elif filter_type == 'specific':
-        	exclude_tag_names = [tag.strip() for tag in exclude_tags.split(',')]
-        	exclude_tag_objects = Tag.objects.filter(name__in=exclude_tag_names)
-        	posts = posts.filter(tags__in=tag_objects).exclude(tags__in=exclude_tag_objects).distinct()
+            posts = posts.filter(tags__in=tag_objects)
+            if exclude_tag_names:
+            	posts = posts.exclude(tags__in=exclude_tag_objects)
+            posts = posts.distinct()
     else:	
     	posts = posts.all()
 
