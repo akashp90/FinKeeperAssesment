@@ -9,6 +9,11 @@
 8. Add new posts, add new tags
 9. Search for posts with tags
 
+## Search explanation
+1. All tags: Includes posts which have all the tags which are specified
+2. Any tags: Includes posts which have at least one of the tags specified
+3. Specific: Includes posts which have at least one of the tags specified, and excludes posts which have any tags specified in the exclude list
+
 
 ## Notes:
 1. Due to limited time, I could not fully optimize the system.
